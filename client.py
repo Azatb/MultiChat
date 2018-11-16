@@ -43,6 +43,6 @@ root.mainloop()
 
 mySocket.close()
 
-# Hej
+# Hej Salik
 
 
