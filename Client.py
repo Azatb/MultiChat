@@ -69,7 +69,7 @@ class Client:
         """This function is to be called when the window is closed."""
         my_msg.set("quit")
         self.send_message()
-
+#
     def send_message(self):
         global my_msg
         msg = my_msg.get()
