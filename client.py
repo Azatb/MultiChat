@@ -23,6 +23,13 @@ class Client:
         send_button.pack()
         self.my_frame.grid(column=0, row=0)
 
+        self.login_frame = Frame(self.root)
+
+        self.username = StringVar()
+        self.username.set("")
+        self.password = StringVar()
+        self.password.set("")
+
     def toggle_chat(self):
         self.name = self.nickname.get()
         self.root.title("Mathias' chat")
@@ -61,6 +68,30 @@ class Client:
         receive_thread = threading.Thread(target=self.receive_message)
         receive_thread.start()
 
+    def login(self):
+        login_file = open("login.txt", "r")
+        content = login_file.readlines()
+        self.toggle_chat()
+
+    def loginGui(self):
+        self.root.geometry("400x400")
+        self.root.title("Login with your credentials")
+        self.my_frame.grid_remove()
+        username_label = Label(self.login_frame, text="Username")
+        username_label.grid(row=0, column=0)
+
+        password_label = Label(self.login_frame, text="Password")
+        password_label.grid(row = 1, column = 0)
+
+        enter_username = Entry(self.login_frame, textvariable=self.username)
+        enter_username.grid(row=0, column=1)
+
+        enter_password = Entry(self.login_frame, textvariable=self.password)
+        enter_password.grid(row=1, column=1)
+        submit_button = Button(self.login_frame, text="Login", bg="green", fg="black")
+        submit_button.grid(row=2, column=1)
+        self.login()
+
     def change_nickname(self, nickname):
         self.name = nickname.get()
         messagebox.showinfo("Just changed your nickname", "You have changed your nickname to: " + nickname.get())
@@ -69,7 +100,7 @@ class Client:
         """This function is to be called when the window is closed."""
         my_msg.set("quit")
         self.send_message()
-#
+
     def send_message(self):
         global my_msg
         msg = my_msg.get()
