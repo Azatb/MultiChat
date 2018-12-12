@@ -9,7 +9,6 @@ class Client:
     def __init__(self, root):
         self.root = root
         self.root.title("Your nickname")
-
         self.my_frame = Frame(self.root)
         self.name = ""
         self.nickname = StringVar()
@@ -19,7 +18,7 @@ class Client:
 
         enter_nickname.pack(fill=X)
 
-        send_button = Button(self.my_frame, text="Enter desired nickname", command=self.toggle_chat, bg="green", fg="black")
+        send_button = Button(self.my_frame, text="Enter desired nickname", command=self.loginGui, bg="green", fg="black")
         send_button.pack()
         self.my_frame.grid(column=0, row=0)
 
@@ -34,6 +33,7 @@ class Client:
         self.name = self.nickname.get()
         self.root.title("Mathias' chat")
         self.my_frame.grid_remove()
+        self.root.geometry("400x400")
         messages_frame = Frame(self.root)
         scrollbar = Scrollbar(messages_frame)
         global msg_list
@@ -60,7 +60,8 @@ class Client:
         change_nickname_field = Entry(self.root, textvariable=self.nickname)
         change_nickname_field.pack(fill=X)
 
-        change_nickname_btn = Button(self.root, text="Change your Nickname", command=lambda: self.change_nickname(self.nickname),
+        change_nickname_btn = Button(self.root, text="Change your Nickname",
+                                    command=lambda: self.change_nickname(self.nickname),
                                     bg="green", fg="black")
         change_nickname_btn.pack()
 
@@ -69,14 +70,25 @@ class Client:
         receive_thread.start()
 
     def login(self):
-        login_file = open("login.txt", "r")
+        login_file = open("user_details.txt", "r")
         content = login_file.readlines()
-        self.toggle_chat()
+        content = [x.strip() for x in content]
+        print("Username: " + content[0])
+        print("Password: " + content[1])
+
+        #if content[0] == "user123" and content[1] == "password":
+        if self.username.get() == content[0] and self.password.get() == content[1]:
+            self.login_frame.grid_remove()
+            self.toggle_chat()
+        else:
+            wrong_password_label = Label(self.login_frame, text="You entered a wrong password", fg="red")
+            wrong_password_label.grid(row=2, column=2)
 
     def loginGui(self):
         self.root.geometry("400x400")
         self.root.title("Login with your credentials")
         self.my_frame.grid_remove()
+        self.login_frame.grid()
         username_label = Label(self.login_frame, text="Username")
         username_label.grid(row=0, column=0)
 
@@ -88,9 +100,9 @@ class Client:
 
         enter_password = Entry(self.login_frame, textvariable=self.password)
         enter_password.grid(row=1, column=1)
-        submit_button = Button(self.login_frame, text="Login", bg="green", fg="black")
+        submit_button = Button(self.login_frame, text="Login", command=self.login, bg="green", fg="black")
         submit_button.grid(row=2, column=1)
-        self.login()
+
 
     def change_nickname(self, nickname):
         self.name = nickname.get()
